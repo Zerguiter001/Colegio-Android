@@ -39,7 +39,7 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
         setContentView(R.layout.activity_registro_usuario);
 
         // Inicializar ApiService desde RetrofitClient
-        apiService = RetrofitClient.getApiService();
+        apiService = RetrofitClient.getApiService(this); // Corregido: pasar el contexto
 
         // Inicializar vistas
         etNombres = findViewById(R.id.etNombres);

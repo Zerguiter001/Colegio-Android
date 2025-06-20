@@ -16,6 +16,8 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
 
+        <activity android:name=".ListaPersonasActivity" />
+        <activity android:name=".DetallesPersonaActivity" />
         <activity android:name=".RegistroUsuarioActivity" />
         <activity android:name=".HomeActivity" />
 

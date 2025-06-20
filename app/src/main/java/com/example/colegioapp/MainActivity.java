@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void login(String usuario, String contrasena) {
         try {
-            ApiService apiService = RetrofitClient.getApiService();
+            ApiService apiService = RetrofitClient.getApiService(this); // Pasa el contexto
             LoginRequest request = new LoginRequest(usuario, contrasena);
 
             apiService.login(request).enqueue(new Callback<LoginResponse>() {
