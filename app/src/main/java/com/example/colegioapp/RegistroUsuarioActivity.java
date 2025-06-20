@@ -1,10 +1,13 @@
 package com.example.colegioapp;
 
+import android.app.DatePickerDialog;
 import android.os.Bundle;
 import android.util.Patterns;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -14,6 +17,7 @@ import com.google.android.material.textfield.TextInputLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import retrofit2.Call;
@@ -22,10 +26,10 @@ import retrofit2.Response;
 
 public class RegistroUsuarioActivity extends AppCompatActivity {
 
-    private TextInputEditText etNombres, etApellidos, etDocumento, etFechaNacimiento, etCorreo, etTelefono,
-            etUsuario, etContrasena, etRol;
-    private TextInputLayout tilUsuario, tilContrasena, tilRol;
+    private TextInputEditText etNombres, etApellidos, etDocumento, etFechaNacimiento, etCorreo, etTelefono;
+    private TextInputLayout tilUsuario, tilContrasena;
     private CheckBox cbActivarAcceso;
+    private Spinner spinnerTipoPersona, spinnerRol;
     private Button btnRegistrar;
     private ApiService apiService;
 
@@ -44,25 +48,48 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
         etFechaNacimiento = findViewById(R.id.etFechaNacimiento);
         etCorreo = findViewById(R.id.etCorreo);
         etTelefono = findViewById(R.id.etTelefono);
-        etUsuario = findViewById(R.id.etUsuario);
-        etContrasena = findViewById(R.id.etContrasena);
-        etRol = findViewById(R.id.etRol);
-        tilUsuario = findViewById(R.id.tilUsuario);
-        tilContrasena = findViewById(R.id.tilContrasena);
-        tilRol = findViewById(R.id.tilRol);
         cbActivarAcceso = findViewById(R.id.cbActivarAcceso);
+        spinnerTipoPersona = findViewById(R.id.spinnerTipoPersona);
+        spinnerRol = findViewById(R.id.spinnerRol);
         btnRegistrar = findViewById(R.id.btnRegistrar);
 
-        // Mostrar/ocultar campos de acceso según el checkbox
+        // Configurar Spinners
+        ArrayAdapter<CharSequence> tipoPersonaAdapter = ArrayAdapter.createFromResource(this,
+                R.array.tipos_persona, android.R.layout.simple_spinner_item);
+        tipoPersonaAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerTipoPersona.setAdapter(tipoPersonaAdapter);
+
+        ArrayAdapter<CharSequence> rolAdapter = ArrayAdapter.createFromResource(this,
+                R.array.roles, android.R.layout.simple_spinner_item);
+        rolAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerRol.setAdapter(rolAdapter);
+
+        // Configurar DatePicker
+        etFechaNacimiento.setOnClickListener(v -> showDatePickerDialog());
+
+        // Mostrar/ocultar spinner de rol según el checkbox
         cbActivarAcceso.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            int visibility = isChecked ? View.VISIBLE : View.GONE;
-            tilUsuario.setVisibility(visibility);
-            tilContrasena.setVisibility(visibility);
-            tilRol.setVisibility(visibility);
+            spinnerRol.setVisibility(isChecked ? View.VISIBLE : View.GONE);
         });
 
         // Acción del botón Registrar
         btnRegistrar.setOnClickListener(v -> registrarUsuario());
+    }
+
+    private void showDatePickerDialog() {
+        final Calendar calendar = Calendar.getInstance();
+        int year = calendar.get(Calendar.YEAR);
+        int month = calendar.get(Calendar.MONTH);
+        int day = calendar.get(Calendar.DAY_OF_MONTH);
+
+        DatePickerDialog datePickerDialog = new DatePickerDialog(
+                this,
+                (view, selectedYear, selectedMonth, selectedDay) -> {
+                    String formattedDate = String.format("%02d/%02d/%04d", selectedDay, selectedMonth + 1, selectedYear);
+                    etFechaNacimiento.setText(formattedDate);
+                },
+                year, month, day);
+        datePickerDialog.show();
     }
 
     private void registrarUsuario() {
@@ -70,16 +97,15 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
         clearErrors();
 
         // Obtener valores
-        String nombres = etNombres.getText().toString().trim();
-        String apellidos = etApellidos.getText().toString().trim();
-        String documento = etDocumento.getText().toString().trim();
-        String fechaNacimiento = etFechaNacimiento.getText().toString().trim();
-        String correo = etCorreo.getText().toString().trim();
-        String telefono = etTelefono.getText().toString().trim();
-        String usuario = etUsuario.getText().toString().trim();
-        String contrasena = etContrasena.getText().toString().trim();
-        String rol = etRol.getText().toString().trim();
+        String nombres = etNombres.getText() != null ? etNombres.getText().toString().trim() : "";
+        String apellidos = etApellidos.getText() != null ? etApellidos.getText().toString().trim() : "";
+        String documento = etDocumento.getText() != null ? etDocumento.getText().toString().trim() : "";
+        String fechaNacimiento = etFechaNacimiento.getText() != null ? etFechaNacimiento.getText().toString().trim() : "";
+        String correo = etCorreo.getText() != null ? etCorreo.getText().toString().trim() : "";
+        String telefono = etTelefono.getText() != null ? etTelefono.getText().toString().trim() : "";
         boolean activarAcceso = cbActivarAcceso.isChecked();
+        int idTipoPersona = getResources().getIntArray(R.array.tipos_persona_ids)[spinnerTipoPersona.getSelectedItemPosition()];
+        int idRol = activarAcceso ? getResources().getIntArray(R.array.roles_ids)[spinnerRol.getSelectedItemPosition()] : 0;
 
         // Validaciones
         boolean isValid = true;
@@ -103,7 +129,7 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
             etFechaNacimiento.setError("La fecha es requerida");
             isValid = false;
         } else if (!isValidDate(fechaNacimiento)) {
-            etFechaNacimiento.setError("Formato inválido (YYYY-MM-DD)");
+            etFechaNacimiento.setError("Formato inválido (DD/MM/YYYY)");
             isValid = false;
         }
         if (correo.isEmpty()) {
@@ -120,39 +146,33 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
             etTelefono.setError("El teléfono debe tener 9 dígitos");
             isValid = false;
         }
-
-        if (activarAcceso) {
-            if (usuario.isEmpty()) {
-                etUsuario.setError("El usuario es requerido");
-                isValid = false;
-            }
-            if (contrasena.isEmpty()) {
-                etContrasena.setError("La contraseña es requerida");
-                isValid = false;
-            } else if (contrasena.length() < 6) {
-                etContrasena.setError("La contraseña debe tener al menos 6 caracteres");
-                isValid = false;
-            }
-            if (rol.isEmpty()) {
-                etRol.setError("El ID de rol es requerido");
-                isValid = false;
-            } else {
-                try {
-                    Integer.parseInt(rol);
-                } catch (NumberFormatException e) {
-                    etRol.setError("ID de rol debe ser un número");
-                    isValid = false;
-                }
-            }
+        if (idTipoPersona == 0) {
+            Toast.makeText(this, "Seleccione un tipo de persona", Toast.LENGTH_SHORT).show();
+            isValid = false;
+        }
+        if (activarAcceso && idRol == 0) {
+            Toast.makeText(this, "Seleccione un rol", Toast.LENGTH_SHORT).show();
+            isValid = false;
         }
 
         if (!isValid) return;
 
+        // Convertir fecha de DD/MM/YYYY a YYYY-MM-DD para el backend
+        String fechaNacimientoBackend;
+        try {
+            SimpleDateFormat inputFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat outputFormat = new SimpleDateFormat("yyyy-MM-dd");
+            Date date = inputFormat.parse(fechaNacimiento);
+            fechaNacimientoBackend = outputFormat.format(date);
+        } catch (ParseException e) {
+            Toast.makeText(this, "Error al convertir la fecha", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         // Crear objeto de solicitud
         RegistroRequest request = new RegistroRequest(
-                nombres, apellidos, documento, fechaNacimiento, correo, telefono,
-                activarAcceso, activarAcceso ? usuario : null,
-                activarAcceso ? contrasena : null, activarAcceso ? Integer.parseInt(rol) : 0
+                nombres, apellidos, documento, fechaNacimientoBackend, correo, telefono,
+                idTipoPersona, activarAcceso, idRol
         );
 
         // Enviar solicitud POST
@@ -161,7 +181,12 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
             @Override
             public void onResponse(Call<RegistroResponse> call, Response<RegistroResponse> response) {
                 if (response.isSuccessful() && response.body() != null) {
-                    Toast.makeText(RegistroUsuarioActivity.this, response.body().getMensaje(), Toast.LENGTH_LONG).show();
+                    RegistroResponse registroResponse = response.body();
+                    String mensaje = registroResponse.getMensaje();
+                    if (activarAcceso && registroResponse.getUsuario() != null && registroResponse.getContrasena() != null) {
+                        mensaje += String.format("\nUsuario: %s\nContraseña: %s", registroResponse.getUsuario(), registroResponse.getContrasena());
+                    }
+                    Toast.makeText(RegistroUsuarioActivity.this, mensaje, Toast.LENGTH_LONG).show();
                     finish(); // Volver a HomeActivity
                 } else {
                     Toast.makeText(RegistroUsuarioActivity.this, "Error: " + response.message(), Toast.LENGTH_LONG).show();
@@ -176,7 +201,7 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
     }
 
     private boolean isValidDate(String dateStr) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sdf.setLenient(false);
         try {
             Date date = sdf.parse(dateStr);
@@ -187,14 +212,11 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
     }
 
     private void clearErrors() {
-        etNombres.setError(null);
-        etApellidos.setError(null);
-        etDocumento.setError(null);
-        etFechaNacimiento.setError(null);
-        etCorreo.setError(null);
-        etTelefono.setError(null);
-        etUsuario.setError(null);
-        etContrasena.setError(null);
-        etRol.setError(null);
+        if (etNombres != null) etNombres.setError(null);
+        if (etApellidos != null) etApellidos.setError(null);
+        if (etDocumento != null) etDocumento.setError(null);
+        if (etFechaNacimiento != null) etFechaNacimiento.setError(null);
+        if (etCorreo != null) etCorreo.setError(null);
+        if (etTelefono != null) etTelefono.setError(null);
     }
 }

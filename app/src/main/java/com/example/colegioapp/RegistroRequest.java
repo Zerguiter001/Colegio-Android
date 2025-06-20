@@ -7,23 +7,21 @@ public class RegistroRequest {
     private String fechaNacimiento;
     private String correo;
     private String telefono;
+    private int idTipoPersona;
     private boolean activarAcceso;
-    private String usuario;
-    private String contrasena;
     private int idRol;
 
     public RegistroRequest(String nombres, String apellidos, String documento, String fechaNacimiento,
-                           String correo, String telefono, boolean activarAcceso, String usuario,
-                           String contrasena, int idRol) {
+                           String correo, String telefono, int idTipoPersona, boolean activarAcceso,
+                           int idRol) {
         this.nombres = nombres;
         this.apellidos = apellidos;
         this.documento = documento;
         this.fechaNacimiento = fechaNacimiento;
         this.correo = correo;
         this.telefono = telefono;
+        this.idTipoPersona = idTipoPersona;
         this.activarAcceso = activarAcceso;
-        this.usuario = usuario;
-        this.contrasena = contrasena;
         this.idRol = idRol;
     }
 
@@ -39,12 +37,10 @@ public class RegistroRequest {
     public void setCorreo(String correo) { this.correo = correo; }
     public String getTelefono() { return telefono; }
     public void setTelefono(String telefono) { this.telefono = telefono; }
+    public int getIdTipoPersona() { return idTipoPersona; }
+    public void setIdTipoPersona(int idTipoPersona) { this.idTipoPersona = idTipoPersona; }
     public boolean isActivarAcceso() { return activarAcceso; }
     public void setActivarAcceso(boolean activarAcceso) { this.activarAcceso = activarAcceso; }
-    public String getUsuario() { return usuario; }
-    public void setUsuario(String usuario) { this.usuario = usuario; }
-    public String getContrasena() { return contrasena; }
-    public void setContrasena(String contrasena) { this.contrasena = contrasena; }
     public int getIdRol() { return idRol; }
     public void setIdRol(int idRol) { this.idRol = idRol; }
 }

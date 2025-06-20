@@ -92,7 +92,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:hint="Fecha de Nacimiento (YYYY-MM-DD)"
+                android:hint="Fecha de Nacimiento (DD/MM/YYYY)"
                 app:hintTextColor="#FF4FC3F7"
                 app:boxStrokeColor="#FF4FC3F7">
 
@@ -100,7 +100,8 @@
                     android:id="@+id/etFechaNacimiento"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="date"/>
+                    android:focusable="false"
+                    android:clickable="true"/>
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -135,6 +136,14 @@
                     android:inputType="phone"/>
             </com.google.android.material.textfield.TextInputLayout>
 
+            <Spinner
+                android:id="@+id/spinnerTipoPersona"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF4FC3F7"
+                android:spinnerMode="dropdown"/>
+
             <CheckBox
                 android:id="@+id/cbActivarAcceso"
                 android:layout_width="wrap_content"
@@ -143,57 +152,14 @@
                 android:text="Activar Acceso de Usuario"
                 android:textColor="#FFFFFFFF"/>
 
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilUsuario"
+            <Spinner
+                android:id="@+id/spinnerRol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Usuario"
-                android:visibility="gone"
-                app:hintTextColor="#FF4FC3F7"
-                app:boxStrokeColor="#FF4FC3F7">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etUsuario"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilContrasena"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="Contraseña"
-                android:visibility="gone"
-                app:hintTextColor="#FF4FC3F7"
-                app:boxStrokeColor="#FF4FC3F7"
-                app:passwordToggleEnabled="true">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etContrasena"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="textPassword"/>
-            </com.google.android.material.textfield.TextInputLayout>
-
-            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/tilRol"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:hint="ID Rol"
-                android:visibility="gone"
-                app:hintTextColor="#FF4FC3F7"
-                app:boxStrokeColor="#FF4FC3F7">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/etRol"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"/>
-            </com.google.android.material.textfield.TextInputLayout>
+                android:layout_marginTop="16dp"
+                android:backgroundTint="#FF4FC3F7"
+                android:spinnerMode="dropdown"
+                android:visibility="gone"/>
 
             <Button
                 android:id="@+id/btnRegistrar"

@@ -1,0 +1,37 @@
+<resources>
+    <string-array name="tipos_persona">
+        <item>Seleccione un tipo</item>
+        <item>Administrador</item>
+        <item>Docente</item>
+        <item>Alumno</item>
+        <item>Familiar</item>
+        <item>Portero</item>
+        <item>Limpieza</item>
+    </string-array>
+
+    <integer-array name="tipos_persona_ids">
+        <item>0</item> <!-- Placeholder -->
+        <item>1</item> <!-- Administrador -->
+        <item>2</item> <!-- Docente -->
+        <item>3</item> <!-- Alumno -->
+        <item>4</item> <!-- Familiar -->
+        <item>5</item> <!-- Portero -->
+        <item>6</item> <!-- Limpieza -->
+    </integer-array>
+
+    <string-array name="roles">
+        <item>Seleccione un rol</item>
+        <item>Administrador</item>
+        <item>Docente</item>
+        <item>Alumno</item>
+        <item>Familiar</item>
+    </string-array>
+
+    <integer-array name="roles_ids">
+        <item>0</item> <!-- Placeholder -->
+        <item>1</item> <!-- Administrador -->
+        <item>2</item> <!-- Docente -->
+        <item>3</item> <!-- Alumno -->
+        <item>4</item> <!-- Familiar -->
+    </integer-array>
+</resources>
