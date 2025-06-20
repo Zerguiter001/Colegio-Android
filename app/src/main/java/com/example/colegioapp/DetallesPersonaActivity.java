@@ -6,6 +6,10 @@ import android.widget.TextView;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public class DetallesPersonaActivity extends AppCompatActivity {
 
     @Override
@@ -36,7 +40,16 @@ public class DetallesPersonaActivity extends AppCompatActivity {
         if (persona != null) {
             tvNombre.setText(persona.getNombres() + " " + persona.getApellidos());
             tvDocumento.setText(persona.getDocumentoIdentidad());
-            tvFechaNacimiento.setText(persona.getFechaNacimiento());
+            // Formatear la fecha
+            String fecha = persona.getFechaNacimiento();
+            try {
+                SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'");
+                SimpleDateFormat displayFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Date date = isoFormat.parse(fecha);
+                tvFechaNacimiento.setText(displayFormat.format(date));
+            } catch (ParseException e) {
+                tvFechaNacimiento.setText(fecha); // Fallback si el parseo falla
+            }
             tvCorreo.setText(persona.getCorreo());
             tvTelefono.setText(persona.getTelefono());
             tvTipoPersona.setText(persona.getTipoPersona());
