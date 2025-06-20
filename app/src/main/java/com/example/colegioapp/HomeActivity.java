@@ -50,6 +50,9 @@ public class HomeActivity extends AppCompatActivity {
             } else if (id == R.id.nav_listar_usuarios) {
                 Intent intent = new Intent(HomeActivity.this, ListaPersonasActivity.class);
                 startActivity(intent);
+            } else if (id == R.id.nav_registrar_nota) {
+                Intent intent = new Intent(HomeActivity.this, RegistrarNotaActivity.class);
+                startActivity(intent);
             } else if (id == R.id.nav_cerrar_sesion) {
                 SharedPreferences prefs = getSharedPreferences("colegioAppPrefs", MODE_PRIVATE);
                 prefs.edit().remove("TOKEN").apply();
