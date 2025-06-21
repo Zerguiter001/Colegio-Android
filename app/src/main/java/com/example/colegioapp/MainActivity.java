@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void login(String usuario, String contrasena) {
         try {
-            ApiService apiService = RetrofitClient.getApiService(this); // Pasa el contexto
+            ApiService apiService = RetrofitClient.getApiService(this);
             LoginRequest request = new LoginRequest(usuario, contrasena);
 
             apiService.login(request).enqueue(new Callback<LoginResponse>() {
@@ -59,9 +59,13 @@ public class MainActivity extends AppCompatActivity {
                     try {
                         if (response.isSuccessful() && response.body() != null) {
                             String token = response.body().getToken();
+                            int idUsuario = response.body().getIdUsuario();
 
                             SharedPreferences prefs = getSharedPreferences("colegioAppPrefs", MODE_PRIVATE);
-                            prefs.edit().putString("TOKEN", token).apply();
+                            SharedPreferences.Editor editor = prefs.edit();
+                            editor.putString("TOKEN", token);
+                            editor.putInt("ID_USUARIO", idUsuario);
+                            editor.apply();
 
                             Toast.makeText(MainActivity.this, "¡Login exitoso!", Toast.LENGTH_SHORT).show();
 
