@@ -18,7 +18,6 @@ public interface ApiService {
     @GET("usuarios/listar")
     Call<List<Persona>> listarPersonas();
 
-    // Endpoints para notas (sin prefijo /api)
     @GET("notas/anios")
     Call<List<AnioEscolar>> listarAnios();
 
@@ -36,4 +35,12 @@ public interface ApiService {
 
     @POST("notas/registrar")
     Call<NotaResponse> registrarNota(@Body NotaRequest notaRequest);
+
+    @GET("notas/alumno/{idUsuarioDocente}/{idAsignatura}/{idPeriodo}/{idUsuarioAlumno}")
+    Call<List<NotaExistenteResponse>> verificarNotaExistente(
+            @Path("idUsuarioDocente") int idUsuarioDocente,
+            @Path("idAsignatura") int idAsignatura,
+            @Path("idPeriodo") int idPeriodo,
+            @Path("idUsuarioAlumno") int idUsuarioAlumno
+    );
 }

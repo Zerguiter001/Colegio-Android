@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="16dp">
+    android:padding="16dp"
+    android:background="#F5F5F5">
 
     <TextView
         android:layout_width="wrap_content"
@@ -12,42 +13,102 @@
         android:textSize="24sp"
         android:textStyle="bold"
         android:layout_gravity="center"
-        android:layout_marginBottom="16dp" />
+        android:layout_marginBottom="16dp"
+        android:textColor="#333333" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Año Escolar"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="#333333" />
 
     <Spinner
         android:id="@+id/spinner_anio"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="Seleccione un año escolar" />
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/spinner_background"
+        android:padding="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Período"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="#333333" />
 
     <Spinner
         android:id="@+id/spinner_periodo"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="Seleccione un período" />
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/spinner_background"
+        android:padding="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Asignatura"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="#333333" />
 
     <Spinner
         android:id="@+id/spinner_asignatura"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="Seleccione una asignatura" />
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/spinner_background"
+        android:padding="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alumno"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="#333333" />
 
     <Spinner
         android:id="@+id/spinner_alumno"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="Seleccione un alumno" />
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/spinner_background"
+        android:padding="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rúbrica"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="#333333" />
 
     <Spinner
         android:id="@+id/spinner_rubrica"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:hint="Seleccione una rúbrica" />
+        android:layout_marginBottom="12dp"
+        android:background="@drawable/spinner_background"
+        android:padding="8dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Nota (0-20)"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"
+        android:textColor="#333333" />
 
     <EditText
         android:id="@+id/et_nota"
@@ -55,14 +116,29 @@
         android:layout_height="wrap_content"
         android:hint="Ingrese la nota (0-20)"
         android:inputType="numberDecimal"
+        android:padding="8dp"
+        android:background="@drawable/edittext_background"
         android:layout_marginBottom="16dp" />
+
+    <TextView
+        android:id="@+id/tv_nota_existente"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textSize="14sp"
+        android:textColor="#FF0000"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone" />
 
     <Button
         android:id="@+id/btn_registrar_nota"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Registrar Nota"
-        android:enabled="false" />
+        android:enabled="false"
+        android:backgroundTint="#4CAF50"
+        android:textColor="#FFFFFF"
+        android:layout_marginBottom="16dp" />
 
     <ProgressBar
         android:id="@+id/progress_bar"
