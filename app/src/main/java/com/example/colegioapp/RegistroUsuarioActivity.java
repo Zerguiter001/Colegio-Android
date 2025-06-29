@@ -189,7 +189,20 @@ public class RegistroUsuarioActivity extends AppCompatActivity {
                     Toast.makeText(RegistroUsuarioActivity.this, mensaje, Toast.LENGTH_LONG).show();
                     finish(); // Volver a HomeActivity
                 } else {
-                    Toast.makeText(RegistroUsuarioActivity.this, "Error: " + response.message(), Toast.LENGTH_LONG).show();
+                    String errorMessage = response.message();
+                    try {
+                        // Intentar parsear el mensaje de error del backend
+                        if (response.errorBody() != null) {
+                            errorMessage = response.errorBody().string();
+                            if (errorMessage.contains("El documento de identidad ya está registrado")) {
+                                etDocumento.setError("El DNI ya está registrado");
+                                return;
+                            }
+                        }
+                    } catch (Exception e) {
+                        // Manejo de excepción en caso de que no se pueda leer el errorBody
+                    }
+                    Toast.makeText(RegistroUsuarioActivity.this, "Error: " + errorMessage, Toast.LENGTH_LONG).show();
                 }
             }
 
