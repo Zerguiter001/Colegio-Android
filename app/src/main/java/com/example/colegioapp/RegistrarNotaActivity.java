@@ -1,6 +1,7 @@
 package com.example.colegioapp;
 
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
@@ -33,12 +34,13 @@ public class RegistrarNotaActivity extends AppCompatActivity {
     private ProgressBar progressBar;
     private ApiService apiService;
     private int idUsuarioDocente;
+    private static final String TAG = "RegistrarNota";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_registrar_nota);
-        Log.d("RegistrarNota", "onCreate iniciado");
+        Log.d(TAG, "onCreate iniciado");
 
         try {
             // Inicializar vistas
@@ -51,45 +53,45 @@ public class RegistrarNotaActivity extends AppCompatActivity {
             tvNotaExistente = findViewById(R.id.tv_nota_existente);
             btnRegistrarNota = findViewById(R.id.btn_registrar_nota);
             progressBar = findViewById(R.id.progress_bar);
-            Log.d("RegistrarNota", "Vistas inicializadas");
+            Log.d(TAG, "Vistas inicializadas");
 
             // Obtener ID del usuario desde SharedPreferences
             SharedPreferences prefs = getSharedPreferences("colegioAppPrefs", MODE_PRIVATE);
             idUsuarioDocente = prefs.getInt("ID_USUARIO", -1);
             if (idUsuarioDocente == -1) {
-                Log.e("RegistrarNota", "No se encontró ID_USUARIO en SharedPreferences");
+                Log.e(TAG, "No se encontró ID_USUARIO en SharedPreferences");
                 Toast.makeText(this, "Error: No se encontró el ID del usuario", Toast.LENGTH_LONG).show();
                 finish();
                 return;
             }
-            Log.d("RegistrarNota", "idUsuarioDocente: " + idUsuarioDocente);
+            Log.d(TAG, "idUsuarioDocente: " + idUsuarioDocente);
 
             // Inicializar Retrofit
             apiService = RetrofitClient.getApiService(this);
-            Log.d("RegistrarNota", "Retrofit inicializado");
+            Log.d(TAG, "Retrofit inicializado");
 
             // Configurar validación dinámica
             setupValidation();
-            Log.d("RegistrarNota", "Validación configurada");
+            Log.d(TAG, "Validación configurada");
 
             // Cargar datos iniciales
             cargarAnios();
             cargarAsignaturas();
             cargarRubricas();
-            Log.d("RegistrarNota", "Carga de datos iniciada");
+            Log.d(TAG, "Carga de datos iniciada");
 
             // Configurar botón
             btnRegistrarNota.setOnClickListener(v -> confirmarRegistroNota());
 
         } catch (Exception e) {
-            Log.e("RegistrarNota", "Error en onCreate: " + e.getMessage(), e);
+            Log.e(TAG, "Error en onCreate: " + e.getMessage(), e);
             Toast.makeText(this, "Error al iniciar actividad: " + e.getMessage(), Toast.LENGTH_LONG).show();
             finish();
         }
     }
 
     private void setupValidation() {
-        Log.d("RegistrarNota", "Configurando validación");
+        Log.d(TAG, "Configurando validación");
         try {
             TextWatcher textWatcher = new TextWatcher() {
                 @Override
@@ -120,7 +122,7 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                             verificarNotaExistente();
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en spinnerListener: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en spinnerListener: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error en selección: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -142,7 +144,7 @@ public class RegistrarNotaActivity extends AppCompatActivity {
             spinnerAlumno.setOnItemSelectedListener(spinnerListener);
             spinnerRubrica.setOnItemSelectedListener(spinnerListener);
         } catch (Exception e) {
-            Log.e("RegistrarNota", "Error en setupValidation: " + e.getMessage(), e);
+            Log.e(TAG, "Error en setupValidation: " + e.getMessage(), e);
             Toast.makeText(this, "Error en validación: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -156,9 +158,9 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                     spinnerRubrica.getSelectedItem() != null &&
                     !etNota.getText().toString().trim().isEmpty();
             btnRegistrarNota.setEnabled(isValid);
-            Log.d("RegistrarNota", "Formulario válido: " + isValid);
+            Log.d(TAG, "Formulario válido: " + isValid);
         } catch (Exception e) {
-            Log.e("RegistrarNota", "Error en validateForm: " + e.getMessage(), e);
+            Log.e(TAG, "Error en validateForm: " + e.getMessage(), e);
         }
     }
 
@@ -196,10 +198,10 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                         } else {
                             tvNotaExistente.setVisibility(View.GONE);
                             etNota.setText("");
-                            Log.d("RegistrarNota", "No se encontró nota existente");
+                            Log.d(TAG, "No se encontró nota existente");
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en verificarNotaExistente onResponse: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en verificarNotaExistente onResponse: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error al verificar nota: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -209,12 +211,12 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                     showProgress(false);
                     tvNotaExistente.setVisibility(View.GONE);
                     Toast.makeText(RegistrarNotaActivity.this, "Error de conexión al verificar nota: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("RegistrarNota", "Error verificarNotaExistente: " + t.getMessage(), t);
+                    Log.e(TAG, "Error verificarNotaExistente: " + t.getMessage(), t);
                 }
             });
         } catch (Exception e) {
             showProgress(false);
-            Log.e("RegistrarNota", "Error en verificarNotaExistente: " + e.getMessage(), e);
+            Log.e(TAG, "Error en verificarNotaExistente: " + e.getMessage(), e);
             Toast.makeText(this, "Error al verificar nota: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -258,7 +260,7 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                     .setNegativeButton("Cancelar", null)
                     .show();
         } catch (Exception e) {
-            Log.e("RegistrarNota", "Error en confirmarRegistroNota: " + e.getMessage(), e);
+            Log.e(TAG, "Error en confirmarRegistroNota: " + e.getMessage(), e);
             Toast.makeText(this, "Error al confirmar nota: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -309,7 +311,7 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                             Toast.makeText(RegistrarNotaActivity.this, errorMsg, Toast.LENGTH_LONG).show();
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en registrarNota onResponse: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en registrarNota onResponse: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error al registrar nota: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -318,12 +320,12 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 public void onFailure(Call<NotaResponse> call, Throwable t) {
                     showProgress(false);
                     Toast.makeText(RegistrarNotaActivity.this, "Error de conexión al registrar nota: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("RegistrarNota", "Error registrarNota: " + t.getMessage(), t);
+                    Log.e(TAG, "Error registrarNota: " + t.getMessage(), t);
                 }
             });
         } catch (Exception e) {
             showProgress(false);
-            Log.e("RegistrarNota", "Error en registrarNota: " + e.getMessage(), e);
+            Log.e(TAG, "Error en registrarNota: " + e.getMessage(), e);
             Toast.makeText(this, "Error al registrar nota: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -342,13 +344,20 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                                     android.R.layout.simple_spinner_item, anios);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerAnio.setAdapter(adapter);
-                            Log.d("RegistrarNota", "Años cargados: " + anios.size());
+                            Log.d(TAG, "Años cargados: " + anios.size());
                         } else {
-                            Toast.makeText(RegistrarNotaActivity.this, "No se encontraron años escolares", Toast.LENGTH_SHORT).show();
-                            Log.d("RegistrarNota", "No se encontraron años escolares");
+                            Log.d(TAG, "No se encontraron años escolares");
+                            new AlertDialog.Builder(RegistrarNotaActivity.this)
+                                    .setTitle("Sin Años Escolares")
+                                    .setMessage("No hay años escolares disponibles para registrar notas.")
+                                    .setPositiveButton("Aceptar", (dialog, which) -> {
+                                        finish(); // Regresar a HomeActivity
+                                    })
+                                    .setCancelable(false)
+                                    .show();
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en cargarAnios onResponse: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en cargarAnios onResponse: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error al cargar años: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -357,12 +366,12 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 public void onFailure(Call<List<AnioEscolar>> call, Throwable t) {
                     showProgress(false);
                     Toast.makeText(RegistrarNotaActivity.this, "Error de conexión al cargar años: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("RegistrarNota", "Error cargarAnios: " + t.getMessage(), t);
+                    Log.e(TAG, "Error cargarAnios: " + t.getMessage(), t);
                 }
             });
         } catch (Exception e) {
             showProgress(false);
-            Log.e("RegistrarNota", "Error al iniciar cargarAnios: " + e.getMessage(), e);
+            Log.e(TAG, "Error al iniciar cargarAnios: " + e.getMessage(), e);
             Toast.makeText(this, "Error al cargar años: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -382,13 +391,17 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                                     android.R.layout.simple_spinner_item, periodos);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerPeriodo.setAdapter(adapter);
-                            Log.d("RegistrarNota", "Períodos cargados: " + periodos.size());
+                            Log.d(TAG, "Períodos cargados: " + periodos.size());
                         } else {
-                            Toast.makeText(RegistrarNotaActivity.this, "No se encontraron períodos", Toast.LENGTH_SHORT).show();
-                            Log.d("RegistrarNota", "No se encontraron períodos");
+                            Log.d(TAG, "No se encontraron períodos");
+                            new AlertDialog.Builder(RegistrarNotaActivity.this)
+                                    .setTitle("Sin Períodos")
+                                    .setMessage("No hay períodos disponibles para el año escolar seleccionado.")
+                                    .setPositiveButton("Aceptar", null)
+                                    .show();
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en cargarPeriodos onResponse: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en cargarPeriodos onResponse: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error al cargar períodos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -397,12 +410,12 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 public void onFailure(Call<List<Periodo>> call, Throwable t) {
                     showProgress(false);
                     Toast.makeText(RegistrarNotaActivity.this, "Error de conexión al cargar períodos: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("RegistrarNota", "Error cargarPeriodos: " + t.getMessage(), t);
+                    Log.e(TAG, "Error cargarPeriodos: " + t.getMessage(), t);
                 }
             });
         } catch (Exception e) {
             showProgress(false);
-            Log.e("RegistrarNota", "Error al iniciar cargarPeriodos: " + e.getMessage(), e);
+            Log.e(TAG, "Error al iniciar cargarPeriodos: " + e.getMessage(), e);
             Toast.makeText(this, "Error al cargar períodos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -415,19 +428,41 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 public void onResponse(Call<List<Asignatura>> call, Response<List<Asignatura>> response) {
                     showProgress(false);
                     try {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        if (response.isSuccessful() && response.body() != null) {
                             List<Asignatura> asignaturas = response.body();
-                            ArrayAdapter<Asignatura> adapter = new ArrayAdapter<>(RegistrarNotaActivity.this,
-                                    android.R.layout.simple_spinner_item, asignaturas);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinnerAsignatura.setAdapter(adapter);
-                            Log.d("RegistrarNota", "Asignaturas cargadas: " + asignaturas.size());
+                            if (!asignaturas.isEmpty()) {
+                                ArrayAdapter<Asignatura> adapter = new ArrayAdapter<>(RegistrarNotaActivity.this,
+                                        android.R.layout.simple_spinner_item, asignaturas);
+                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                spinnerAsignatura.setAdapter(adapter);
+                                Log.d(TAG, "Asignaturas cargadas: " + asignaturas.size());
+                            } else {
+                                Log.d(TAG, "No se encontraron asignaturas");
+                                new AlertDialog.Builder(RegistrarNotaActivity.this)
+                                        .setTitle("Sin Asignaturas")
+                                        .setMessage("No tienes asignaturas asignadas para registrar notas.")
+                                        .setPositiveButton("Aceptar", (dialog, which) -> {
+                                            finish(); // Regresar a HomeActivity
+                                        })
+                                        .setCancelable(false)
+                                        .show();
+                            }
                         } else {
-                            Toast.makeText(RegistrarNotaActivity.this, "No se encontraron asignaturas", Toast.LENGTH_SHORT).show();
-                            Log.d("RegistrarNota", "No se encontraron asignaturas");
+                            Log.w(TAG, "Respuesta no exitosa o cuerpo nulo al cargar asignaturas. Código HTTP: " + response.code());
+                            if (response.errorBody() != null) {
+                                Log.w(TAG, "Cuerpo del error: " + response.errorBody().string());
+                            }
+                            new AlertDialog.Builder(RegistrarNotaActivity.this)
+                                    .setTitle("Error")
+                                    .setMessage("Error al cargar asignaturas. Por favor, intenta de nuevo.")
+                                    .setPositiveButton("Aceptar", (dialog, which) -> {
+                                        finish(); // Regresar a HomeActivity
+                                    })
+                                    .setCancelable(false)
+                                    .show();
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en cargarAsignaturas onResponse: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en cargarAsignaturas onResponse: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error al cargar asignaturas: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -435,13 +470,20 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 @Override
                 public void onFailure(Call<List<Asignatura>> call, Throwable t) {
                     showProgress(false);
-                    Toast.makeText(RegistrarNotaActivity.this, "Error de conexión al cargar asignaturas: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("RegistrarNota", "Error cargarAsignaturas: " + t.getMessage(), t);
+                    Log.e(TAG, "Error cargarAsignaturas: " + t.getMessage(), t);
+                    new AlertDialog.Builder(RegistrarNotaActivity.this)
+                            .setTitle("Error de Conexión")
+                            .setMessage("No se pudo conectar al servidor para cargar asignaturas: " + t.getMessage())
+                            .setPositiveButton("Aceptar", (dialog, which) -> {
+                                finish(); // Regresar a HomeActivity
+                            })
+                            .setCancelable(false)
+                            .show();
                 }
             });
         } catch (Exception e) {
             showProgress(false);
-            Log.e("RegistrarNota", "Error al iniciar cargarAsignaturas: " + e.getMessage(), e);
+            Log.e(TAG, "Error al iniciar cargarAsignaturas: " + e.getMessage(), e);
             Toast.makeText(this, "Error al cargar asignaturas: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -455,19 +497,35 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 public void onResponse(Call<List<Alumno>> call, Response<List<Alumno>> response) {
                     showProgress(false);
                     try {
-                        if (response.isSuccessful() && response.body() != null && !response.body().isEmpty()) {
+                        if (response.isSuccessful() && response.body() != null) {
                             List<Alumno> alumnos = response.body();
-                            ArrayAdapter<Alumno> adapter = new ArrayAdapter<>(RegistrarNotaActivity.this,
-                                    android.R.layout.simple_spinner_item, alumnos);
-                            adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                            spinnerAlumno.setAdapter(adapter);
-                            Log.d("RegistrarNota", "Alumnos cargados: " + alumnos.size());
+                            if (!alumnos.isEmpty()) {
+                                ArrayAdapter<Alumno> adapter = new ArrayAdapter<>(RegistrarNotaActivity.this,
+                                        android.R.layout.simple_spinner_item, alumnos);
+                                adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                spinnerAlumno.setAdapter(adapter);
+                                Log.d(TAG, "Alumnos cargados: " + alumnos.size());
+                            } else {
+                                Log.d(TAG, "No se encontraron alumnos");
+                                new AlertDialog.Builder(RegistrarNotaActivity.this)
+                                        .setTitle("Sin Alumnos")
+                                        .setMessage("No hay alumnos inscritos en esta asignatura.")
+                                        .setPositiveButton("Aceptar", null)
+                                        .show();
+                            }
                         } else {
-                            Toast.makeText(RegistrarNotaActivity.this, "No se encontraron alumnos", Toast.LENGTH_SHORT).show();
-                            Log.d("RegistrarNota", "No se encontraron alumnos");
+                            Log.w(TAG, "Respuesta no exitosa o cuerpo nulo al cargar alumnos. Código HTTP: " + response.code());
+                            if (response.errorBody() != null) {
+                                Log.w(TAG, "Cuerpo del error: " + response.errorBody().string());
+                            }
+                            new AlertDialog.Builder(RegistrarNotaActivity.this)
+                                    .setTitle("Error")
+                                    .setMessage("Error al cargar alumnos. Por favor, intenta de nuevo.")
+                                    .setPositiveButton("Aceptar", null)
+                                    .show();
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en cargarAlumnos onResponse: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en cargarAlumnos onResponse: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error al cargar alumnos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -476,12 +534,17 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 public void onFailure(Call<List<Alumno>> call, Throwable t) {
                     showProgress(false);
                     Toast.makeText(RegistrarNotaActivity.this, "Error de conexión al cargar alumnos: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("RegistrarNota", "Error cargarAlumnos: " + t.getMessage(), t);
+                    Log.e(TAG, "Error cargarAlumnos: " + t.getMessage(), t);
+                    new AlertDialog.Builder(RegistrarNotaActivity.this)
+                            .setTitle("Error de Conexión")
+                            .setMessage("No se pudo conectar al servidor para cargar alumnos: " + t.getMessage())
+                            .setPositiveButton("Aceptar", null)
+                            .show();
                 }
             });
         } catch (Exception e) {
             showProgress(false);
-            Log.e("RegistrarNota", "Error al iniciar cargarAlumnos: " + e.getMessage(), e);
+            Log.e(TAG, "Error al iniciar cargarAlumnos: " + e.getMessage(), e);
             Toast.makeText(this, "Error al cargar alumnos: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -500,13 +563,20 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                                     android.R.layout.simple_spinner_item, rubricas);
                             adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                             spinnerRubrica.setAdapter(adapter);
-                            Log.d("RegistrarNota", "Rúbricas cargadas: " + rubricas.size());
+                            Log.d(TAG, "Rúbricas cargadas: " + rubricas.size());
                         } else {
-                            Toast.makeText(RegistrarNotaActivity.this, "No se encontraron rúbricas", Toast.LENGTH_SHORT).show();
-                            Log.d("RegistrarNota", "No se encontraron rúbricas");
+                            Log.d(TAG, "No se encontraron rúbricas");
+                            new AlertDialog.Builder(RegistrarNotaActivity.this)
+                                    .setTitle("Sin Rúbricas")
+                                    .setMessage("No hay rúbricas disponibles para registrar notas.")
+                                    .setPositiveButton("Aceptar", (dialog, which) -> {
+                                        finish(); // Regresar a HomeActivity
+                                    })
+                                    .setCancelable(false)
+                                    .show();
                         }
                     } catch (Exception e) {
-                        Log.e("RegistrarNota", "Error en cargarRubricas onResponse: " + e.getMessage(), e);
+                        Log.e(TAG, "Error en cargarRubricas onResponse: " + e.getMessage(), e);
                         Toast.makeText(RegistrarNotaActivity.this, "Error al cargar rúbricas: " + e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 }
@@ -515,12 +585,20 @@ public class RegistrarNotaActivity extends AppCompatActivity {
                 public void onFailure(Call<List<Rubrica>> call, Throwable t) {
                     showProgress(false);
                     Toast.makeText(RegistrarNotaActivity.this, "Error de conexión al cargar rúbricas: " + t.getMessage(), Toast.LENGTH_LONG).show();
-                    Log.e("RegistrarNota", "Error cargarRubricas: " + t.getMessage(), t);
+                    Log.e(TAG, "Error cargarRubricas: " + t.getMessage(), t);
+                    new AlertDialog.Builder(RegistrarNotaActivity.this)
+                            .setTitle("Error de Conexión")
+                            .setMessage("No se pudo conectar al servidor para cargar rúbricas: " + t.getMessage())
+                            .setPositiveButton("Aceptar", (dialog, which) -> {
+                                finish(); // Regresar a HomeActivity
+                            })
+                            .setCancelable(false)
+                            .show();
                 }
             });
         } catch (Exception e) {
             showProgress(false);
-            Log.e("RegistrarNota", "Error al iniciar cargarRubricas: " + e.getMessage(), e);
+            Log.e(TAG, "Error al iniciar cargarRubricas: " + e.getMessage(), e);
             Toast.makeText(this, "Error al cargar rúbricas: " + e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -529,9 +607,9 @@ public class RegistrarNotaActivity extends AppCompatActivity {
         try {
             progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
             btnRegistrarNota.setEnabled(!show && btnRegistrarNota.isEnabled());
-            Log.d("RegistrarNota", "ProgressBar actualizado: " + show);
+            Log.d(TAG, "ProgressBar actualizado: " + show);
         } catch (Exception e) {
-            Log.e("RegistrarNota", "Error en showProgress: " + e.getMessage(), e);
+            Log.e(TAG, "Error en showProgress: " + e.getMessage(), e);
         }
     }
 }
