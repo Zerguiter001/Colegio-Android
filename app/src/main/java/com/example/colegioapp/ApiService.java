@@ -12,6 +12,10 @@ public interface ApiService {
     @POST("auth/login")
     Call<LoginResponse> login(@Body LoginRequest loginRequest);
 
+    @POST("menu/gestionarMenu")
+    Call<MenuResponse> gestionarMenu(@Body MenuRequest request);
+
+
     @POST("usuarios/registrar")
     Call<RegistroResponse> registrarUsuario(@Body RegistroRequest registroRequest);
 
@@ -43,4 +47,5 @@ public interface ApiService {
             @Path("idPeriodo") int idPeriodo,
             @Path("idUsuarioAlumno") int idUsuarioAlumno
     );
+
 }

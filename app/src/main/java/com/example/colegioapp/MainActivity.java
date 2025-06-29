@@ -60,11 +60,13 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful() && response.body() != null) {
                             String token = response.body().getToken();
                             int idUsuario = response.body().getIdUsuario();
+                            int idRol = response.body().getIdRol();
 
                             SharedPreferences prefs = getSharedPreferences("colegioAppPrefs", MODE_PRIVATE);
                             SharedPreferences.Editor editor = prefs.edit();
                             editor.putString("TOKEN", token);
                             editor.putInt("ID_USUARIO", idUsuario);
+                            editor.putInt("ID_ROL", idRol);
                             editor.apply();
 
                             Toast.makeText(MainActivity.this, "¡Login exitoso!", Toast.LENGTH_SHORT).show();

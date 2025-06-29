@@ -1,10 +1,8 @@
 package com.example.colegioapp;
 
 import android.content.Context;
-import android.content.SharedPreferences;
 
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -18,18 +16,7 @@ public class RetrofitClient {
             HttpLoggingInterceptor interceptor = new HttpLoggingInterceptor();
             interceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
 
-            SharedPreferences prefs = context.getSharedPreferences("colegioAppPrefs", Context.MODE_PRIVATE);
-            String token = prefs.getString("TOKEN", null);
-
             OkHttpClient client = new OkHttpClient.Builder()
-                    .addInterceptor(chain -> {
-                        Request original = chain.request();
-                        Request.Builder requestBuilder = original.newBuilder();
-                        if (token != null) {
-                            requestBuilder.header("Authorization", "Bearer " + token);
-                        }
-                        return chain.proceed(requestBuilder.build());
-                    })
                     .addInterceptor(interceptor)
                     .build();
 
